@@ -1,4 +1,0 @@
-- hosts: master
-  become: yes
-  roles:
-  - setup
