@@ -7,7 +7,7 @@ provider "aws" {
 resource "aws_launch_configuration" "machine-factory-v2" {
     name = "machine-factory-v2"
     image_id = "ami-b63769a1"
-    security_groups = ["sg-7056ec01","sg-7655ef07"]
+    security_groups = ["sg-68139219","sg-c51796b4"]
     instance_type = "t2.micro"
     key_name = "myappkeypair"
     user_data       = "${file("userdata.sh")}"
@@ -26,7 +26,7 @@ resource "aws_autoscaling_group" "machine-factory-v2" {
   force_delete = false
   launch_configuration = "${aws_launch_configuration.machine-factory-v2.name}"
   load_balancers = ["web-elb"]
-  vpc_zone_identifier = ["subnet-2dba3f01","subnet-d2334e9a"]
+  vpc_zone_identifier = ["subnet-7e0d8952","subnet-c8473b80"]
 }
 
 
