@@ -17,7 +17,7 @@ then
 rm -rf $fis/terraform.*;cp userdata.sh $fis;cd $fis;sudo terraform plan;sudo terraform apply
 sleep 120
 aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
-sleep 10
+sleep 30
 aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
 sleep 10
 sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg1
@@ -30,7 +30,7 @@ else
  sleep 120
 
 aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
-sleep 10
+sleep 30
 aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
 sleep 10
 sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg2
