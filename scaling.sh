@@ -21,13 +21,13 @@ sleep 30
 sudo aws autoscaling detach-load-balancers --auto-scaling-group-name $lcfg1 --load-balancer-names web-elb
 sleep 10
 
-inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name $lcfg1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
 
 for i in inst
   do
   sudo  aws ec2 terminate-instances --instance-ids $inst
   sleep 70
-  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg1 --launch-configuration-nam $lcfg1 --min-size 0 --max-size 0
+  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg1 --launch-configuration-name $lcfg1 --min-size 0 --max-size 0
  sleep 120
   sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg1
   sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg1
@@ -51,7 +51,7 @@ for i in inst
   do
   sudo  aws ec2 terminate-instances --instance-ids $inst
   sleep 70
-  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg2 --launch-configuration-nam $lcfg2 --min-size 0 --max-size 0
+  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg2 --launch-configuration-name $lcfg2 --min-size 0 --max-size 0
  sleep 120
   sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg2
   sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg2
