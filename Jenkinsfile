@@ -3,7 +3,7 @@ node {
    	stage 'Stage 1'
    		echo 'Hello Deploying Docker App'
    	stage 'Checkout'
-   		git url: 'https://github.com/rsthakur83/openshift'
+   		git url: 'https://github.com/rsthakur83/challenge'
    
       stage 'Execute'
          sh 'chmod +x docker.sh'
