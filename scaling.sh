@@ -16,13 +16,23 @@ if [ "$asg1" == "$lcfg1" ]
 then
 rm -rf $fis/terraform.*;cp userdata.sh $fis;cd $fis;sudo terraform plan;sudo terraform apply
 sleep 120
-aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+sudo aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
 sleep 30
-aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+sudo aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
 sleep 10
-sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg1
-sleep 20
-aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  machine-factory-v1
+
+inst=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+
+for i in inst
+  do
+  sudo  aws ec2 terminate-instances --instance-ids $inst
+  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg1 --launch-configuration-nam $lcfg1 --min-size 0 --max-size 0
+ sleep 120
+  sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg1
+  sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg1
+
+done
+
 
 
 else
@@ -33,9 +43,18 @@ aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-
 sleep 30
 aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
 sleep 10
-sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg2
-sleep 20
-aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  machine-factory-v2
+
+inst=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+
+for i in inst
+  do
+  sudo  aws ec2 terminate-instances --instance-ids $inst
+  sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg2 --launch-configuration-nam $lcfg2 --min-size 0 --max-size 0
+ sleep 120
+  sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg2
+  sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg2
+
+done
 
 
 fi
