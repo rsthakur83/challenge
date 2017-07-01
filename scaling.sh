@@ -16,18 +16,24 @@ if [ "$asg1" == "$lcfg1" ]
 then
 rm -rf $fis/terraform.*;cp userdata.sh $fis;cd $fis;sudo terraform plan;sudo terraform apply
 sleep 120
-sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name machine-factory-v1 --launch-configuration-name $lcfg2 --min-size 4 --max-size 5
-
-sleep 120
+aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+sleep 30
 sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg1
+sleep 20
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  machine-factory-v1
+
 
 else
  rm -rf $fis/terraform.*;cp userdata.sh $sec;cd $sec;sudo terraform plan;sudo terraform apply
  sleep 120
 
-sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name machine-factory-v1 --launch-configuration-name $lcfg1 --min-size 4 --max-size 5
-
-sleep 120
+aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+sleep 30
 sudo aws autoscaling delete-launch-configuration --launch-configuration-name $lcfg2
+sleep 20
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  machine-factory-v2
+
 
 fi
