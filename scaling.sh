@@ -16,9 +16,9 @@ if [ "$asg1" == "$lcfg1" ]
 then
 rm -rf $fis/terraform.*;cp userdata.sh $fis;cd $fis;sudo terraform plan;sudo terraform apply
 sleep 120
-sudo aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+sudo aws autoscaling attach-load-balancers --auto-scaling-group-name $lcfg2 --load-balancer-names web-elb
 sleep 30
-sudo aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+sudo aws autoscaling detach-load-balancers --auto-scaling-group-name $lcfg1 --load-balancer-names web-elb
 sleep 10
 
 inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
@@ -40,12 +40,12 @@ else
  rm -rf $fis/terraform.*;cp userdata.sh $sec;cd $sec;sudo terraform plan;sudo terraform apply
  sleep 120
 
-sudo aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+sudo aws autoscaling attach-load-balancers --auto-scaling-group-name $lcfg1 --load-balancer-names web-elb
 sleep 30
-sudo aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+sudo aws autoscaling detach-load-balancers --auto-scaling-group-name $lcfg2 --load-balancer-names web-elb
 sleep 10
 
-inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name lcfg2|grep InstanceId|awk '{print $2}'|cut -c 2-20`
 
 for i in inst
   do
