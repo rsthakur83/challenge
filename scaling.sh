@@ -21,11 +21,12 @@ sleep 30
 sudo aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
 sleep 10
 
-inst=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
 
 for i in inst
   do
   sudo  aws ec2 terminate-instances --instance-ids $inst
+  sleep 70
   sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg1 --launch-configuration-nam $lcfg1 --min-size 0 --max-size 0
  sleep 120
   sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg1
@@ -39,16 +40,17 @@ else
  rm -rf $fis/terraform.*;cp userdata.sh $sec;cd $sec;sudo terraform plan;sudo terraform apply
  sleep 120
 
-aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
+sudo aws autoscaling attach-load-balancers --auto-scaling-group-name machine-factory-v1 --load-balancer-names web-elb
 sleep 30
-aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
+sudo aws autoscaling detach-load-balancers --auto-scaling-group-name machine-factory-v2 --load-balancer-names web-elb
 sleep 10
 
-inst=`aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
+inst=`sudo aws autoscaling describe-auto-scaling-groups --auto-scaling-group-name machine-factory-v1|grep InstanceId|awk '{print $2}'|cut -c 2-20`
 
 for i in inst
   do
   sudo  aws ec2 terminate-instances --instance-ids $inst
+  sleep 70
   sudo aws autoscaling update-auto-scaling-group --auto-scaling-group-name $lcfg2 --launch-configuration-nam $lcfg2 --min-size 0 --max-size 0
  sleep 120
   sudo  aws autoscaling delete-auto-scaling-group --auto-scaling-group-name  $lcfg2
